@@ -58,6 +58,11 @@ struct auth_request_fields {
 	struct ip_addr local_ip, remote_ip, real_local_ip, real_remote_ip;
 	in_port_t local_port, remote_port, real_local_port, real_remote_port;
 
+	/* the login/username and fingerprint given by the certificate */
+	char *cert_loginname;
+	char *cert_fingerprint;
+	char *cert_fingerprint_base64;
+ 
         /* extra_fields are returned in authentication reply. Fields prefixed
            with "userdb_" are automatically placed to userdb_reply instead. */
         struct auth_fields *extra_fields;

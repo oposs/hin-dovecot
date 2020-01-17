@@ -226,6 +226,12 @@ bool auth_request_import_auth(struct auth_request *request,
 		fields->no_penalty = TRUE;
 	else if (strcmp(key, "valid-client-cert") == 0)
 		fields->valid_client_cert = TRUE;
+	else if (strcmp(key, "cert_loginname") == 0)
+		fields->cert_loginname = p_strdup(request->pool, value);
+	else if (strcmp(key, "cert_fingerprint") == 0)
+		fields->cert_fingerprint = p_strdup(request->pool, value);
+	else if (strcmp(key, "cert_fingerprint_base64") == 0)
+		fields->cert_fingerprint_base64 = p_strdup(request->pool, value);
 	else if (strcmp(key, "cert_username") == 0) {
 		if (request->set->ssl_username_from_cert && *value != '\0') {
 			/* get username from SSL certificate. it overrides

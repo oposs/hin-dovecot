@@ -250,6 +250,15 @@ static void checkpassword_setup_env(struct auth_request *request)
 		env_put("TCPREMOTEPORT", dec2str(fields->remote_port));
 	if (fields->master_user != NULL)
 		env_put("MASTER_USER", fields->master_user);
+	
+	if (fields->cert_loginname != NULL)
+		env_put("SSL_USERNAME_CONTENT",fields->cert_loginname);
+	if (fields->cert_fingerprint != NULL)
+		env_put("SSL_FINGERPRINT",fields->cert_fingerprint);
+	if (fields->cert_fingerprint_base64 != NULL)
+		env_put("SSL_FINGERPRINT_BASE64",
+					fields->cert_fingerprint_base64);
+
 	if (!auth_fields_is_empty(fields->extra_fields)) {
 		const ARRAY_TYPE(auth_field) *extra_fields =
 			auth_fields_export(fields->extra_fields);

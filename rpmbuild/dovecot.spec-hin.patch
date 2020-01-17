@@ -1,0 +1,124 @@
+--- dovecot.spec.orig	2020-01-17 17:00:10.636298348 +0100
++++ dovecot.spec	2020-01-17 17:00:39.891210534 +0100
+@@ -19,7 +19,7 @@
+ Name: dovecot
+ Epoch: 2
+ Version: 2.3.16
+-Release: 2
++Release: op1
+ #dovecot itself is MIT, a few sources are PD, pigeonhole is LGPLv2
+ License: MIT and LGPLv2
+ Group: System Environment/Daemons
+@@ -52,8 +52,6 @@
+ BuildRequires: openssl-devel, pam-devel, zlib-devel, bzip2-devel, libcap-devel
+ BuildRequires: libtool, autoconf, automake, pkgconfig
+ BuildRequires: sqlite-devel
+-BuildRequires: postgresql-devel
+-BuildRequires: mysql-devel
+ BuildRequires: openldap-devel
+ BuildRequires: krb5-devel
+ BuildRequires: quota-devel
+@@ -107,24 +105,6 @@
+ 
+ The SQL drivers and authentication plug-ins are in their subpackages.
+ 
+-%package pgsql
+-Requires: %{name} = %{epoch}:%{version}-%{release}
+-Provides: dovecot-pgsql = %{epoch}:%{version}-%{release}
+-Obsoletes: dovecot-pgsql < %{epoch}:%{version}-%{release}
+-Summary: Postgres SQL back end for dovecot
+-Group: System Environment/Daemons
+-%description pgsql
+-This package provides the Postgres SQL back end for dovecot-auth etc.
+-
+-%package mysql
+-Requires: %{name} = %{epoch}:%{version}-%{release}
+-Provides: dovecot-mysql = %{epoch}:%{version}-%{release}
+-Obsoletes: dovecot-mysql < %{epoch}:%{version}-%{release}
+-Summary: MySQL back end for dovecot
+-Group: System Environment/Daemons
+-%description mysql
+-This package provides the MySQL back end for dovecot-auth etc.
+-
+ %package devel
+ Requires: %{name} = %{epoch}:%{version}-%{release}
+ Provides: dovecot-devel = %{epoch}:%{version}-%{release}
+@@ -134,17 +114,6 @@
+ %description devel
+ This package provides the development files for dovecot.
+ 
+-%package lua
+-Summary: LUA support for Dovecot Community Edition
+-Group: System Environment/Daemons
+-Requires: %name = %{epoch}:%{version}-%{release}
+-Requires: lua >= 5.1
+-BuildRequires: lua-devel >= 5.1
+-
+-%description lua
+-This package provides LUA scripting support for Dovecot Community Edition
+-
+-
+ %prep
+ %setup -q -n %{name}-%{version}
+ #%patch1 -p1 -b .default-settings
+@@ -168,7 +137,7 @@
+ autoreconf -I . -fiv #required for aarch64 support
+ %endif
+ %configure                       \
+-    INSTALL_DATA="install -c -p -m644" \
++    INSTALL_DATA="install -c -p -m644" PANDOC=false \
+     --docdir=%{_docdir}/%{name}  \
+     --disable-static             \
+     --disable-rpath              \
+@@ -178,9 +147,6 @@
+     --with-gssapi=plugin         \
+     --with-ldap=plugin           \
+     --with-sql=plugin            \
+-    --with-lua=plugin		 \
+-    --with-pgsql                 \
+-    --with-mysql                 \
+     --with-sqlite                \
+     --with-zlib                  \
+     --with-libcap                \
+@@ -343,7 +309,7 @@
+ echo "Skip make check"
+ 
+ %files
+-%doc docinstall/* AUTHORS ChangeLog COPYING COPYING.LGPL COPYING.MIT NEWS README
++%doc docinstall/* AUTHORS COPYING COPYING.LGPL COPYING.MIT NEWS README.md README-hin-patch.md
+ %{_sbindir}/dovecot
+ 
+ %{_bindir}/doveadm
+@@ -447,19 +413,19 @@
+ %{_libdir}/dovecot/libdovecot*.so
+ %{_libdir}/dovecot/dovecot-config
+ 
+-%files mysql
+-%{_libdir}/dovecot/libdriver_mysql.so
+-%{_libdir}/dovecot/auth/libdriver_mysql.so
+-%{_libdir}/dovecot/dict/libdriver_mysql.so
+-
+-%files pgsql
+-%{_libdir}/dovecot/libdriver_pgsql.so
+-%{_libdir}/dovecot/auth/libdriver_pgsql.so
+-%{_libdir}/dovecot/dict/libdriver_pgsql.so
+-
+-%files lua
+-%defattr(-,root,root,-)
+-%{_libdir}/dovecot/auth/libauthdb_lua.so
++# %files mysql
++# %{_libdir}/dovecot/libdriver_mysql.so
++# %{_libdir}/dovecot/auth/libdriver_mysql.so
++# %{_libdir}/dovecot/dict/libdriver_mysql.so
++
++# %files pgsql
++# %{_libdir}/dovecot/libdriver_pgsql.so
++# %{_libdir}/dovecot/auth/libdriver_pgsql.so
++# %{_libdir}/dovecot/dict/libdriver_pgsql.so
++
++# %files lua
++# %defattr(-,root,root,-)
++# %{_libdir}/dovecot/auth/libauthdb_lua.so
+ 
+ %changelog
+ * Fri Dec 22 2017 Ville Savolainen <ville.savolainen@dovecot.fi> - 2:2.3.0-1

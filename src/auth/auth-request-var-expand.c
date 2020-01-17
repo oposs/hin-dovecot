@@ -62,6 +62,9 @@ auth_request_var_expand_static_tab[AUTH_REQUEST_VAR_TAB_COUNT+1] = {
 	{ '\0', NULL, "original_username" },
 	{ '\0', NULL, "original_domain" },
 
+	{ 'z', NULL, "cert_loginname" },
+	{ 'f', NULL, "cert_fingerprint" },
+	{ 'F', NULL, "cert_fingerprint_base64" },
 	/* be sure to update AUTH_REQUEST_VAR_TAB_COUNT */
 	{ '\0', NULL, NULL }
 };
@@ -202,6 +205,17 @@ auth_request_get_var_expand_table_full(const struct auth_request *auth_request,
 		tab[33].value = escape_func(fields->local_name, auth_request);
 	if (fields->client_id != NULL)
 		tab[34].value = escape_func(fields->client_id, auth_request);
+
+	if (fields->cert_loginname != NULL) {
+		tab[35].value = escape_func(fields->cert_loginname, auth_request);
+	}
+	if (fields->cert_fingerprint != NULL) {
+		tab[36].value = escape_func(fields->cert_fingerprint, auth_request);
+	}
+	if (fields->cert_fingerprint_base64 != NULL) {
+		tab[37].value = escape_func(fields->cert_fingerprint_base64, auth_request);
+	}
+
 	return ret_tab;
 }
 
